@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	repositoryCompany "golang-gingonic-hex-architecture/src/infraestructure/company/provider/repository"
 	"golang-gingonic-hex-architecture/src/infraestructure/response"
 	controller "golang-gingonic-hex-architecture/src/infraestructure/user/controller"
 	dao "golang-gingonic-hex-architecture/src/infraestructure/user/provider/dao"
@@ -23,9 +24,10 @@ var once sync.Once
 func UserProvider(conn *gorm.DB, router *gin.RouterGroup) {
 	once.Do(func() {
 		repositoryUser := repository.GetRepositoryUser(conn)
+		repositoryCompany := repositoryCompany.GetRepositoryCompany(conn)
 		daoUser := dao.GetDaoUser(conn)
 
-		serviceRegisterUser := infraestructureService.GetServiceRegisterUser(*repositoryUser)
+		serviceRegisterUser := infraestructureService.GetServiceRegisterUser(*repositoryUser, *repositoryCompany)
 		serviceLoginUser := infraestructureService.GetServiceLoginUser(*repositoryUser)
 
 		handleRegisterUser := command.NewHandlerRegisterUser(serviceRegisterUser)

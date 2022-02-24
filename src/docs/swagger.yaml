@@ -1,13 +1,54 @@
 definitions:
-  command.CommandRegisterUser:
+  command.CommandLoginUser:
     properties:
-      CreationDate:
-        type: string
-      Name:
+      Email:
         type: string
       Password:
         minLength: 6
         type: string
+    type: object
+  command.CommandRegisterCompany:
+    properties:
+      Email:
+        minLength: 5
+        type: string
+      Name:
+        minLength: 5
+        type: string
+      Owner:
+        minLength: 5
+        type: string
+      Phone:
+        minLength: 7
+        type: string
+    required:
+    - Email
+    - Name
+    - Owner
+    - Phone
+    type: object
+  command.CommandRegisterUser:
+    properties:
+      CompanyId:
+        type: integer
+      Email:
+        minLength: 5
+        type: string
+      Name:
+        minLength: 5
+        type: string
+      Password:
+        description: CreationDate string `json:"CreationDate" binding:"required"`
+        minLength: 6
+        type: string
+      Role:
+        type: string
+    required:
+    - CompanyId
+    - Email
+    - Name
+    - Password
+    - Role
     type: object
   response.ResponseModel:
     properties:
@@ -22,6 +63,42 @@ definitions:
 info:
   contact: {}
 paths:
+  /company:
+    get:
+      consumes:
+      - application/json
+      description: Get all companies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseModel'
+      summary: Get companies
+      tags:
+      - company
+    post:
+      consumes:
+      - application/json
+      description: Enpoint to create a company
+      parameters:
+      - description: create company
+        in: body
+        name: company
+        required: true
+        schema:
+          $ref: '#/definitions/command.CommandRegisterCompany'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseModel'
+      summary: Create company
+      tags:
+      - company
   /user:
     get:
       consumes:
@@ -56,6 +133,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ResponseModel'
       summary: Create user
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Enpoint to login a user
+      parameters:
+      - description: login user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/command.CommandLoginUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseModel'
+      summary: Login of user
       tags:
       - user
 swagger: "2.0"

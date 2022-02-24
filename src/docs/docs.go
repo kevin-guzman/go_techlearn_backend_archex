@@ -16,6 +16,61 @@ const docTemplate_swagger = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/company": {
+            "get": {
+                "description": "Get all companies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Get companies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseModel"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Enpoint to create a company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Create company",
+                "parameters": [
+                    {
+                        "description": "create company",
+                        "name": "company",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/command.CommandRegisterCompany"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "description": "Get all users",
@@ -70,21 +125,110 @@ const docTemplate_swagger = `{
                     }
                 }
             }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Enpoint to login a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Login of user",
+                "parameters": [
+                    {
+                        "description": "login user",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/command.CommandLoginUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseModel"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "command.CommandRegisterUser": {
+        "command.CommandLoginUser": {
             "type": "object",
             "properties": {
-                "CreationDate": {
-                    "type": "string"
-                },
-                "Name": {
+                "Email": {
                     "type": "string"
                 },
                 "Password": {
                     "type": "string",
                     "minLength": 6
+                }
+            }
+        },
+        "command.CommandRegisterCompany": {
+            "type": "object",
+            "required": [
+                "Email",
+                "Name",
+                "Owner",
+                "Phone"
+            ],
+            "properties": {
+                "Email": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "Name": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "Owner": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "Phone": {
+                    "type": "string",
+                    "minLength": 7
+                }
+            }
+        },
+        "command.CommandRegisterUser": {
+            "type": "object",
+            "required": [
+                "CompanyId",
+                "Email",
+                "Name",
+                "Password",
+                "Role"
+            ],
+            "properties": {
+                "CompanyId": {
+                    "type": "integer"
+                },
+                "Email": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "Name": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "Password": {
+                    "description": "CreationDate string ` + "`" + `json:\"CreationDate\" binding:\"required\"` + "`" + `",
+                    "type": "string",
+                    "minLength": 6
+                },
+                "Role": {
+                    "type": "string"
                 }
             }
         },

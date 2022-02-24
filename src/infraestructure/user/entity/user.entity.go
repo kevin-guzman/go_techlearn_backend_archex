@@ -2,13 +2,12 @@ package entity
 
 import (
 	"fmt"
+	"golang-gingonic-hex-architecture/src/infraestructure/company/entity"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
-
-// type Password string
 
 type User struct {
 	gorm.Model
@@ -18,6 +17,8 @@ type User struct {
 	Creation_date time.Time
 	Role          string
 	Email         string
+	CompanyId     int
+	Company       entity.Company `gorm:"foreignKey:CompanyId"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

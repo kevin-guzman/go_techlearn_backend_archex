@@ -34,7 +34,7 @@ func NewJWTAuthService() JWTService {
 }
 
 func getSecretKey() string {
-	secret := os.Getenv("SECRET")
+	secret := os.Getenv("JWT_PASSWORD")
 	if secret == "" {
 		secret = "secret"
 	}

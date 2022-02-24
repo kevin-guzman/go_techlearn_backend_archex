@@ -19,7 +19,7 @@ func NewRepositoryUserPostgreSql(conn *gorm.DB) *RepositoryUserPostgreSql {
 }
 
 func (rup *RepositoryUserPostgreSql) Save(user model.User) error {
-	entity := entity.User{Name: user.Name, Password: user.Password, Creation_date: time.Now(), Email: user.Email, Role: user.Role}
+	entity := entity.User{Name: user.Name, CompanyId: user.CompanyId, Password: user.Password, Creation_date: time.Now(), Email: user.Email, Role: user.Role}
 	result := rup.userRepository.Create(&entity)
 	return result.Error
 }

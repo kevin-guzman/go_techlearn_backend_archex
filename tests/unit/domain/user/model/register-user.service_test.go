@@ -2,25 +2,28 @@ package model_test
 
 import (
 	"golang-gingonic-hex-architecture/src/domain/user/model"
-	"testing"
-	"time"
 
-	"github.com/stretchr/testify/require"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
-func TestPasswordLessThanRequired(t *testing.T) {
-	assert := require.New(t)
-	_, err := model.NewUser("JUan", "1234", "USER", "test@gmail.com")
-	assert.Error(err, "The leng of the password is incorrect")
-	assert.True(err.Error() == "The leng of the password is incorrect")
-}
+var _ = Describe("User", func() {
+	It("Should fail with a password less than 6", func() {
+		_, err := model.NewUser("JUan", "1234", "role", "email", 1)
+		Expect(err).Error()
+		Expect(err.Error()).To(Equal("The leng of the password is incorrect"))
+	})
 
-func TestUserInstanceCorrect(t *testing.T) {
-	assert := require.New(t)
-	var expectUser *model.User
-	expectUser = &model.User{Name: "JUan", Password: "123ss3r4", Creation_date: time.Now(), Role: "USER", Email: "test@gmail.com"}
-	usr, err := model.NewUser(expectUser.Name, expectUser.Password, expectUser.Role, expectUser.Email)
-	assert.True(err == nil)
-	assert.True(usr != nil)
-	assert.Equal(expectUser, usr)
-}
+	It("Should create a user", func() {
+		expectUser := model.User{
+			Name:      "JUan",
+			Password:  "123ss3r4",
+			Role:      "role",
+			Email:     "email",
+			CompanyId: 1,
+		}
+		usr, err := model.NewUser(expectUser.Name, expectUser.Password, expectUser.Role, expectUser.Email, expectUser.CompanyId)
+		Expect(err).To(BeNil())
+		Expect(&expectUser).To(Equal(usr))
+	})
+})
