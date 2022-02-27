@@ -11,9 +11,10 @@ import (
 //Roles
 const (
 	ADMINISTRATOR        = "ADMINISTRATOR"
-	USER                 = "USER"
+	TECHNICAL_WORKER     = "TECHNICAL_WORKER"
 	LEGAL_REPRESENTATIVE = "LEGAL_REPRESENTATIVE"
 	ARTICLE_WRITER       = "ARTICLE_WRITER"
+	LEATHER              = "LEATHER"
 )
 
 func JWTMIddleware(jwtService jwt.JWTService, roles []string) gin.HandlerFunc {
