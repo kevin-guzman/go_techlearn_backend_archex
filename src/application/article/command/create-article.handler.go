@@ -17,7 +17,7 @@ func NewHandlerCreateArticle(sca *service.ServiceCreateArticle) *HandlerCreateAr
 }
 
 func (hca *HandlerCreateArticle) Run(command CommandCreateArticle) (string, error, int) {
-	article, err := model.NewArticle(command.Title, command.Description, command.Content, command.WiterUserId)
+	article, err := model.NewArticle(command.Title, command.Description, command.Content, command.WiterUserId, command.Type)
 	if err != nil {
 		return "", err, http.StatusInternalServerError
 	}

@@ -17,8 +17,8 @@ type JWTService interface {
 }
 
 type authCustomClaims struct {
-	Name string `json:"name"`
-	Role string `json:"role"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -90,9 +90,9 @@ func (service *jwtServices) ValidateRole(token *jwt.Token, roles []string) (err 
 
 func (service *jwtServices) GetId(token *jwt.Token) (err error, id string) {
 	tokenClaims := token.Claims.(jwt.MapClaims)
-	id, ok := tokenClaims["id"].(string)
+	id, ok := tokenClaims["jti"].(string)
 	if !ok {
-		err = fmt.Errorf("Error obtaining token role")
+		err = fmt.Errorf("Error obtaining token id")
 	}
 	return err, id
 }

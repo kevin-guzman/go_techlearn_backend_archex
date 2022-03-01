@@ -35,7 +35,11 @@ func JWTMIddleware(jwtService jwt.JWTService, roles []string) gin.HandlerFunc {
 				c.Abort()
 				return
 			} else {
-				id, _ := jwtService.GetId(token)
+				err, id := jwtService.GetId(token)
+				if err != nil {
+					response.SendError(c, err.Error(), "Invalid token", http.StatusUnauthorized)
+					return
+				}
 				c.Set("id", id)
 				c.Next()
 				return

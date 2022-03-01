@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"golang-gingonic-hex-architecture/src/domain/article/model"
+	"time"
+)
 
 type ArticleDto struct {
 	Id          int
@@ -9,4 +12,5 @@ type ArticleDto struct {
 	Content     string
 	WiterUserId string
 	WrittenAt   time.Time
+	Type        model.ArticleTypes
 }

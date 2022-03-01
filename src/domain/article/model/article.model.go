@@ -3,6 +3,7 @@ package model
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -16,13 +17,14 @@ type Article struct {
 	Type        ArticleTypes
 }
 
-func NewArticle(title, description, content string, witerUserId int) (*Article, error) {
+func NewArticle(title, description, content string, witerUserId int, articleType ArticleTypes) (*Article, error) {
 	return &Article{
 		Title:       title,
 		Description: description,
 		Content:     content,
 		WiterUserId: witerUserId,
 		WrittenAt:   time.Now(),
+		Type:        articleType,
 	}, nil
 }
 
@@ -62,7 +64,11 @@ func (s *ArticleTypes) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	// Note that if the string cannot be found then it will be set to the zero value, 'Configuration' in this case.
-	*s = toID[j]
+
+	value, ok := toID[j]
+	if !ok {
+		return fmt.Errorf("Error value %s is out of enum", j)
+	}
+	*s = value
 	return nil
 }
