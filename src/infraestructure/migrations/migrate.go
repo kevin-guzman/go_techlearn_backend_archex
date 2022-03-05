@@ -2,8 +2,8 @@ package main
 
 import (
 	"golang-gingonic-hex-architecture/src/infraestructure"
-	articleEntity "golang-gingonic-hex-architecture/src/infraestructure/article/entity"
 	companyEntity "golang-gingonic-hex-architecture/src/infraestructure/company/entity"
+	publicationEntity "golang-gingonic-hex-architecture/src/infraestructure/publication/entity"
 	userEntity "golang-gingonic-hex-architecture/src/infraestructure/user/entity"
 	"log"
 	"os"
@@ -49,7 +49,7 @@ func Migrate() {
 	entities := map[string]interface{}{
 		"users":     &userEntity.User{},
 		"companies": &companyEntity.Company{},
-		"articles":  &articleEntity.Article{},
+		"articles":  &publicationEntity.Publication{},
 	}
 
 	for name, entity := range entities {

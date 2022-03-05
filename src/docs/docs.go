@@ -71,6 +71,61 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/publication": {
+            "get": {
+                "description": "Get all publications",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "publication"
+                ],
+                "summary": "Get publications",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseModel"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Enpoint to create a publication",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "publication"
+                ],
+                "summary": "Create publication",
+                "parameters": [
+                    {
+                        "description": "create publication",
+                        "name": "publication",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/command.CommandCreatePublication"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "description": "Get all users",
@@ -162,6 +217,35 @@ const docTemplate_swagger = `{
         }
     },
     "definitions": {
+        "command.CommandCreatePublication": {
+            "type": "object",
+            "required": [
+                "Content",
+                "Description",
+                "Title",
+                "Type"
+            ],
+            "properties": {
+                "Content": {
+                    "type": "string",
+                    "minLength": 90
+                },
+                "Description": {
+                    "type": "string",
+                    "minLength": 20
+                },
+                "Title": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "Type": {
+                    "type": "string"
+                },
+                "WiterUserId": {
+                    "type": "integer"
+                }
+            }
+        },
         "command.CommandLoginUser": {
             "type": "object",
             "properties": {
@@ -223,7 +307,6 @@ const docTemplate_swagger = `{
                     "minLength": 5
                 },
                 "Password": {
-                    "description": "CreationDate string ` + "`" + `json:\"CreationDate\" binding:\"required\"` + "`" + `",
                     "type": "string",
                     "minLength": 6
                 },

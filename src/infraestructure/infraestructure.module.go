@@ -1,8 +1,8 @@
 package infraestructure
 
 import (
-	articleProvider "golang-gingonic-hex-architecture/src/infraestructure/article/provider"
 	companyProvider "golang-gingonic-hex-architecture/src/infraestructure/company/provider"
+	publicationProvider "golang-gingonic-hex-architecture/src/infraestructure/publication/provider"
 	userProvider "golang-gingonic-hex-architecture/src/infraestructure/user/provider"
 	"os"
 	"sync"
@@ -46,7 +46,7 @@ var InitInfraestructure = func(router *gin.RouterGroup) {
 
 		userProvider.UserProvider(dbConnection, router)
 		companyProvider.CompanyProvider(dbConnection, router)
-		articleProvider.ArticleProvider(dbConnection, router)
+		publicationProvider.PublicationProvider(dbConnection, router)
 	})
 }
 

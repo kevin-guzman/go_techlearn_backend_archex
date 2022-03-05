@@ -1,4 +1,25 @@
 definitions:
+  command.CommandCreatePublication:
+    properties:
+      Content:
+        minLength: 90
+        type: string
+      Description:
+        minLength: 20
+        type: string
+      Title:
+        minLength: 5
+        type: string
+      Type:
+        type: string
+      WiterUserId:
+        type: integer
+    required:
+    - Content
+    - Description
+    - Title
+    - Type
+    type: object
   command.CommandLoginUser:
     properties:
       Email:
@@ -38,7 +59,6 @@ definitions:
         minLength: 5
         type: string
       Password:
-        description: CreationDate string `json:"CreationDate" binding:"required"`
         minLength: 6
         type: string
       Role:
@@ -99,6 +119,42 @@ paths:
       summary: Create company
       tags:
       - company
+  /publication:
+    get:
+      consumes:
+      - application/json
+      description: Get all publications
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseModel'
+      summary: Get publications
+      tags:
+      - publication
+    post:
+      consumes:
+      - application/json
+      description: Enpoint to create a publication
+      parameters:
+      - description: create publication
+        in: body
+        name: publication
+        required: true
+        schema:
+          $ref: '#/definitions/command.CommandCreatePublication'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseModel'
+      summary: Create publication
+      tags:
+      - publication
   /user:
     get:
       consumes:
