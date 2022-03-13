@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const MIN_PASSWORD_LENGTH = 6
+const MIN_PASSWORD_LENGTH = 8
 
 type User struct {
 	Name          string

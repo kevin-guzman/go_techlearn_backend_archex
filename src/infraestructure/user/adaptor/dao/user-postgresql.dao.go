@@ -19,6 +19,6 @@ func NewDaoUserPostgreSql(conn *gorm.DB) *DaoUserPostgreSql {
 
 func (dup *DaoUserPostgreSql) List() []*dto.UserDto {
 	var users []*dto.UserDto
-	dup.daoUser.Raw("SELECT u.name FROM USERS u").Scan(&users)
+	dup.daoUser.Raw("SELECT * FROM USERS u").Scan(&users)
 	return users
 }

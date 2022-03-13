@@ -1,13 +1,15 @@
 package provider
 
 import (
-	"fmt"
 	repositoryCompany "golang-gingonic-hex-architecture/src/infraestructure/company/provider/repository"
+	"golang-gingonic-hex-architecture/src/infraestructure/middlewares"
 	"golang-gingonic-hex-architecture/src/infraestructure/response"
 	controller "golang-gingonic-hex-architecture/src/infraestructure/user/controller"
 	dao "golang-gingonic-hex-architecture/src/infraestructure/user/provider/dao"
 	repository "golang-gingonic-hex-architecture/src/infraestructure/user/provider/repository"
+	"golang-gingonic-hex-architecture/src/infraestructure/utils/jwt"
 	"net/http"
+	"strconv"
 	"sync"
 
 	command "golang-gingonic-hex-architecture/src/application/user/command"
@@ -28,18 +30,44 @@ func UserProvider(conn *gorm.DB, router *gin.RouterGroup) {
 		daoUser := dao.GetDaoUser(conn)
 
 		serviceRegisterUser := infraestructureService.GetServiceRegisterUser(*repositoryUser, *repositoryCompany)
+		serviceEditUser := infraestructureService.GetServiceEditUser(*repositoryUser)
 		serviceLoginUser := infraestructureService.GetServiceLoginUser(*repositoryUser)
+		serviceDeleteUser := infraestructureService.GetServiceDeleteUser(*repositoryUser)
 
 		handleRegisterUser := command.NewHandlerRegisterUser(serviceRegisterUser)
 		handleLoginUser := command.NewHandlerLoginUser(serviceLoginUser)
 		handleListUsers := query.NewHandlerListUsers(*daoUser)
+		handleEditUser := command.NewHandlerEditUser(serviceEditUser)
+		handleDeleteUser := command.NewHandlerDeleteUser(serviceDeleteUser)
 
-		controllerInstance = controller.NewControllerUser(*handleRegisterUser, *handleListUsers, *handleLoginUser)
+		controllerInstance = controller.NewControllerUser(*handleRegisterUser, *handleListUsers, *handleLoginUser, *handleEditUser, *handleDeleteUser)
 		user := router.Group("/user")
 		{
 			user.POST("/", CreateUser)
 			user.GET("/", ListUsers)
 			user.POST("/login", Login)
+			user.PATCH("/",
+				middlewares.JWTMIddleware(
+					jwt.NewJWTAuthService(),
+					[]string{
+						middlewares.ADMINISTRATOR,
+						middlewares.PUBLICATION_WRITER,
+						middlewares.LEATHER,
+						middlewares.LEGAL_REPRESENTATIVE,
+						middlewares.TECHNICAL_WORKER,
+					},
+				),
+				Update,
+			)
+			user.DELETE("/",
+				middlewares.JWTMIddleware(
+					jwt.NewJWTAuthService(),
+					[]string{
+						middlewares.TECHNICAL_WORKER,
+					},
+				),
+				Delete,
+			)
 		}
 	})
 }
@@ -101,12 +129,78 @@ func Login(c *gin.Context) {
 		response.SendError(c, "Invalid data: "+err.Error(), "", http.StatusBadRequest)
 		return
 	}
-
-	fmt.Println("cred", credentials)
 	msg, err, status := controllerInstance.Login(credentials)
 	if err != nil {
 		response.SendError(c, err.Error(), msg, status)
 		return
 	}
 	response.SendSucess(c, "Success", status, msg)
+}
+
+// Update a user
+// @Summary Update user
+// @Schemes http https
+// @Description Enpoint to update a user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param user body command.CommandEditUser true "update user"
+// @Success 200 {object} response.ResponseModel
+// @Failture 500 {object} response.ResponseModel
+// @Router /user [patch]
+func Update(c *gin.Context) {
+	var user command.CommandEditUser
+	if err := c.ShouldBindJSON(&user); err != nil {
+		response.SendError(c, "Invalid data: "+err.Error(), "", http.StatusBadRequest)
+		return
+	}
+
+	id, _ := c.Get("id")
+	parsedId, err := strconv.ParseInt(id.(string), 10, 64)
+	if err != nil {
+		response.SendError(c, err.Error(), "", http.StatusUnauthorized)
+		return
+	}
+	user.UserId = int(parsedId)
+
+	msg, err, status := controllerInstance.Update(user)
+	if err != nil {
+		response.SendError(c, err.Error(), msg, status)
+		return
+	}
+	response.SendSucess(c, msg, status, nil)
+}
+
+// Delete a user
+// @Summary Delete user
+// @Schemes http https
+// @Description Enpoint to delete a user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param user body command.CommandDeleteUser true "delete user"
+// @Success 200 {object} response.ResponseModel
+// @Failture 500 {object} response.ResponseModel
+// @Router /user [delete]
+func Delete(c *gin.Context) {
+	var user command.CommandDeleteUser
+	if err := c.ShouldBindJSON(&user); err != nil {
+		response.SendError(c, "Invalid data: "+err.Error(), "", http.StatusBadRequest)
+		return
+	}
+
+	id, _ := c.Get("id")
+	parsedId, err := strconv.ParseInt(id.(string), 10, 64)
+	if err != nil {
+		response.SendError(c, err.Error(), "", http.StatusUnauthorized)
+		return
+	}
+	user.UserId = int(parsedId)
+
+	msg, err, status := controllerInstance.Delete(user)
+	if err != nil {
+		response.SendError(c, err.Error(), msg, status)
+		return
+	}
+	response.SendSucess(c, msg, status, nil)
 }

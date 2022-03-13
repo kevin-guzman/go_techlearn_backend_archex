@@ -179,6 +179,70 @@ const docTemplate_swagger = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Enpoint to delete a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "description": "delete user",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/command.CommandDeleteUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseModel"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Enpoint to update a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "description": "update user",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/command.CommandEditUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseModel"
+                        }
+                    }
+                }
             }
         },
         "/user/login": {
@@ -246,6 +310,40 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "command.CommandDeleteUser": {
+            "type": "object",
+            "required": [
+                "Email",
+                "Password"
+            ],
+            "properties": {
+                "Email": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "Password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "command.CommandEditUser": {
+            "type": "object",
+            "properties": {
+                "Email": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
         "command.CommandLoginUser": {
             "type": "object",
             "properties": {
@@ -308,7 +406,7 @@ const docTemplate_swagger = `{
                 },
                 "Password": {
                     "type": "string",
-                    "minLength": 6
+                    "minLength": 8
                 },
                 "Role": {
                     "type": "string"

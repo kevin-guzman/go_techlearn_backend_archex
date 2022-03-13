@@ -24,10 +24,10 @@ func (rup *RepositoryUserPostgreSql) Save(user model.User) error {
 	return result.Error
 }
 
-func (rup *RepositoryUserPostgreSql) ExistUserName(name string) (bool, error) {
+func (rup *RepositoryUserPostgreSql) ExistUserNameAndEmail(name, email string) (bool, error) {
 	var user model.User
 	var count int64 = 0
-	result := rup.userRepository.Find(&user, "name = ?", name).Count(&count)
+	result := rup.userRepository.Where("name = ?", name).Or("email = ?", email).Find(&user).Count(&count)
 	if result.Error != nil {
 		return false, result.Error
 	}
@@ -40,4 +40,19 @@ func (rup *RepositoryUserPostgreSql) GetUserByEmail(email string) (user model.Us
 		return user, result.Error
 	}
 	return user, nil
+}
+
+func (rup *RepositoryUserPostgreSql) EditUser(id int, user model.User) error {
+	var entityUser entity.User
+	entityUser.Name = user.Name
+	entityUser.Email = user.Email
+	result := rup.userRepository.Where("id = ?", id).Updates(entityUser)
+	return result.Error
+}
+
+func (rup *RepositoryUserPostgreSql) Delete(id int) error {
+	var entityUser entity.User
+	entityUser.Id = id
+	result := rup.userRepository.Unscoped().Delete(&entityUser)
+	return result.Error
 }

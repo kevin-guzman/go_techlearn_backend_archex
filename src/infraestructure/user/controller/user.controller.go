@@ -10,13 +10,17 @@ type ControllerUser struct {
 	handlerRegisterUser command.HandlerRegisterUser
 	handlerListUsers    query.HandlerListUsers
 	handleLoginUser     command.HandlerLoginUser
+	handleEditUser      command.HandlerEditUser
+	handleDeleteUser    command.HandlerDeleteUser
 }
 
-func NewControllerUser(hru command.HandlerRegisterUser, hlu query.HandlerListUsers, hlou command.HandlerLoginUser) *ControllerUser {
+func NewControllerUser(hru command.HandlerRegisterUser, hlu query.HandlerListUsers, hlou command.HandlerLoginUser, heu command.HandlerEditUser, hdu command.HandlerDeleteUser) *ControllerUser {
 	return &ControllerUser{
 		handlerRegisterUser: hru,
 		handlerListUsers:    hlu,
 		handleLoginUser:     hlou,
+		handleEditUser:      heu,
+		handleDeleteUser:    hdu,
 	}
 }
 
@@ -30,4 +34,12 @@ func (cu *ControllerUser) List() []*dto.UserDto {
 
 func (cu *ControllerUser) Login(command command.CommandLoginUser) (string, error, int) {
 	return cu.handleLoginUser.Run(command)
+}
+
+func (cu *ControllerUser) Update(command command.CommandEditUser) (string, error, int) {
+	return cu.handleEditUser.Run(command)
+}
+
+func (cu *ControllerUser) Delete(command command.CommandDeleteUser) (string, error, int) {
+	return cu.handleDeleteUser.Run(command)
 }

@@ -1,12 +1,12 @@
 package provider
 
 import (
-	"encoding/json"
 	controller "golang-gingonic-hex-architecture/src/infraestructure/publication/controller"
 	dao "golang-gingonic-hex-architecture/src/infraestructure/publication/provider/dao"
 	repository "golang-gingonic-hex-architecture/src/infraestructure/publication/provider/repository"
 	"golang-gingonic-hex-architecture/src/infraestructure/response"
 	"golang-gingonic-hex-architecture/src/infraestructure/utils/jwt"
+	"golang-gingonic-hex-architecture/src/infraestructure/utils/parse"
 	"net/http"
 	"strconv"
 	"sync"
@@ -102,16 +102,12 @@ func ListPublications(c *gin.Context) {
 	var data []*dto.PublicationDto
 	if len(query) > 0 {
 		var filters dto.FilterPublicationsDto
-		if bytes, err := json.Marshal(query); err != nil {
+
+		if err := parse.ParseQueryToDto(query, &filters); err != nil {
 			response.SendError(c, "Invalid data: "+err.Error(), "", http.StatusBadRequest)
 			return
-		} else {
-			if err = json.Unmarshal(bytes, &filters); err != nil {
-				response.SendError(c, "Invalid data: "+err.Error(), "", http.StatusBadRequest)
-				return
-			}
-			data = controllerInstance.ListFiltred(filters)
 		}
+		data = controllerInstance.ListFiltred(filters)
 	} else {
 		data = controllerInstance.List()
 	}

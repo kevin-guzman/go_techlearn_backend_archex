@@ -10,12 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var (
-	errTraceLogin       string = "This error has ocurred in login-user.service.go"
-	internalErrorLogin  string = "Internal server error"
-	successMessageLogin string = "User has succesfully created!"
-)
-
 type ServiceLoginUser struct {
 	userRepository repository.RepositoryUser
 }
@@ -27,6 +21,7 @@ func NewServiceLoginUser(UserR repository.RepositoryUser) *ServiceLoginUser {
 }
 
 func (sru *ServiceLoginUser) Run(email, password string) (string, error, int) {
+	LoadStringsFromService(SERVICE_LOGIN)
 	user, err := sru.userRepository.GetUserByEmail(email)
 	if err != nil {
 		return "", errors.NewErrorCore(err, errTrace, "Service error").PublicError(), http.StatusInternalServerError
