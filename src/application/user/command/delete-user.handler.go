@@ -15,7 +15,7 @@ func NewHandlerDeleteUser(sdu *service.ServiceDeleteUser) *HandlerDeleteUser {
 	}
 }
 
-func (hdu *HandlerDeleteUser) Run(commandDU CommandDeleteUser) (string, error, int) {
+func (hdu *HandlerDeleteUser) Run(id int, commandDU CommandDeleteUser) interface{} {
 	user := model.User{Email: commandDU.Email, Password: commandDU.Password}
-	return hdu.serviceDeleteUser.Run(commandDU.UserId, user)
+	return hdu.serviceDeleteUser.Run(id, user)
 }

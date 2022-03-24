@@ -1,12 +1,13 @@
 package service
 
 import (
+	userDto "golang-gingonic-hex-architecture/src/application/user/query/dto"
 	"golang-gingonic-hex-architecture/src/domain/errors"
 	"golang-gingonic-hex-architecture/src/domain/user/port/repository"
 	"golang-gingonic-hex-architecture/src/infraestructure/utils/jwt"
-	"net/http"
 	"strconv"
 
+	dtoUtil "github.com/dranikpg/dto-mapper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,20 +21,24 @@ func NewServiceLoginUser(UserR repository.RepositoryUser) *ServiceLoginUser {
 	}
 }
 
-func (sru *ServiceLoginUser) Run(email, password string) (string, error, int) {
+func (sru *ServiceLoginUser) Run(email, password string) interface{} {
 	LoadStringsFromService(SERVICE_LOGIN)
 	user, err := sru.userRepository.GetUserByEmail(email)
 	if err != nil {
-		return "", errors.NewErrorCore(err, errTrace, "Service error").PublicError(), http.StatusInternalServerError
+		return errors.NewErrorPort(err)
 	}
 
 	userPasswordBytes := []byte(user.Password)
 	passwordBytes := []byte(password)
 	err = bcrypt.CompareHashAndPassword(userPasswordBytes, passwordBytes)
 	if err != nil {
-		return "", errors.NewErrorCore(err, errTrace, "Invalid credentials for user").PublicError(), http.StatusUnauthorized
+		return errors.NewErrorUserCredentials(err)
 	}
 
 	token := jwt.NewJWTAuthService().GenerateToken(strconv.Itoa(user.Id), email, user.Role)
-	return token, nil, http.StatusOK
+	var _user userDto.UserDto
+	dtoUtil.Map(&_user, user)
+	data := map[string]interface{}{"token": token, "user": _user}
+
+	return data
 }

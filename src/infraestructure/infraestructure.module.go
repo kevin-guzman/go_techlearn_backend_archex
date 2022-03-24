@@ -31,7 +31,10 @@ var InitInfraestructure = func(router *gin.RouterGroup) {
 		}
 		DATABSE_STRING_CONNECTION := CreateDatabaseStringConnetion(&dbProperties)
 
-		conn, err := gorm.Open(postgres.Open(DATABSE_STRING_CONNECTION), &gorm.Config{})
+		conn, err := gorm.Open(postgres.Open(DATABSE_STRING_CONNECTION), &gorm.Config{
+			// SkipDefaultTransaction: true,
+
+		})
 		ENV := os.Getenv("ENV")
 		switch ENV {
 		case "development":

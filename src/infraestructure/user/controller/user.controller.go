@@ -24,7 +24,7 @@ func NewControllerUser(hru command.HandlerRegisterUser, hlu query.HandlerListUse
 	}
 }
 
-func (cu *ControllerUser) Create(command command.CommandRegisterUser) (string, error, int) {
+func (cu *ControllerUser) Create(command command.CommandRegisterUser) interface{} {
 	return cu.handlerRegisterUser.Run(command)
 }
 
@@ -32,14 +32,14 @@ func (cu *ControllerUser) List() []*dto.UserDto {
 	return cu.handlerListUsers.Run()
 }
 
-func (cu *ControllerUser) Login(command command.CommandLoginUser) (string, error, int) {
+func (cu *ControllerUser) Login(command command.CommandLoginUser) interface{} {
 	return cu.handleLoginUser.Run(command)
 }
 
-func (cu *ControllerUser) Update(command command.CommandEditUser) (string, error, int) {
+func (cu *ControllerUser) Update(command command.CommandEditUser) interface{} {
 	return cu.handleEditUser.Run(command)
 }
 
-func (cu *ControllerUser) Delete(command command.CommandDeleteUser) (string, error, int) {
-	return cu.handleDeleteUser.Run(command)
+func (cu *ControllerUser) Delete(id int, command command.CommandDeleteUser) interface{} {
+	return cu.handleDeleteUser.Run(id, command)
 }

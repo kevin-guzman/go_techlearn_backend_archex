@@ -14,7 +14,6 @@ func NewHandlerLoginUser(slu *service.ServiceLoginUser) *HandlerLoginUser {
 	}
 }
 
-func (hlu *HandlerLoginUser) Run(commandLU CommandLoginUser) (string, error, int) {
-	message, err, status := hlu.serviceLoginUser.Run(commandLU.Email, commandLU.Password)
-	return message, err, status
+func (hlu *HandlerLoginUser) Run(commandLU CommandLoginUser) interface{} {
+	return hlu.serviceLoginUser.Run(commandLU.Email, commandLU.Password)
 }

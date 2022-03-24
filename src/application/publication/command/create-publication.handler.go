@@ -3,7 +3,6 @@ package command
 import (
 	"golang-gingonic-hex-architecture/src/domain/publication/model"
 	"golang-gingonic-hex-architecture/src/domain/publication/service"
-	"net/http"
 )
 
 type HandlerCreatePublication struct {
@@ -16,11 +15,10 @@ func NewHandlerCreatePublication(sca *service.ServiceCreatePublication) *Handler
 	}
 }
 
-func (hca *HandlerCreatePublication) Run(command CommandCreatePublication) (string, error, int) {
+func (hca *HandlerCreatePublication) Run(command CommandCreatePublication) interface{} {
 	article, err := model.NewPublication(command.Title, command.Description, command.Content, command.WiterUserId, command.Type)
 	if err != nil {
-		return "", err, http.StatusInternalServerError
+		return err
 	}
-	message, err, status := hca.serviceCreatePublication.Run(*article)
-	return message, err, status
+	return hca.serviceCreatePublication.Run(*article)
 }

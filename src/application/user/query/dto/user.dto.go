@@ -7,4 +7,5 @@ type UserDto struct {
 	Creation_date time.Time
 	Email         string
 	Role          string
+	Id            int
 }

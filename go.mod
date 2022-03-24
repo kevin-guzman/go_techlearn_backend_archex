@@ -23,6 +23,7 @@ require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dranikpg/dto-mapper v0.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
@@ -55,8 +56,10 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
+	github.com/withmandala/go-log v0.1.0 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sys v0.0.0-20220207234003-57398862261d // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.9 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect

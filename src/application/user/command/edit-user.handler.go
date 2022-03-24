@@ -15,7 +15,7 @@ func NewHandlerEditUser(seu *service.ServiceEditUser) *HandlerEditUser {
 	}
 }
 
-func (heu *HandlerEditUser) Run(commandEU CommandEditUser) (string, error, int) {
+func (heu *HandlerEditUser) Run(commandEU CommandEditUser) interface{} {
 	user := model.User{Name: commandEU.Name, Email: commandEU.Email}
 	return heu.serviceEditUser.Run(commandEU.UserId, user)
 }

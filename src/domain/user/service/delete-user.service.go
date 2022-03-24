@@ -5,7 +5,6 @@ import (
 	"golang-gingonic-hex-architecture/src/domain/errors"
 	"golang-gingonic-hex-architecture/src/domain/user/model"
 	"golang-gingonic-hex-architecture/src/domain/user/port/repository"
-	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -20,30 +19,30 @@ func NewServiceDeleteUser(UserR repository.RepositoryUser) *ServiceDeleteUser {
 	}
 }
 
-func (sdu *ServiceDeleteUser) Run(id int, user model.User) (string, error, int) {
+func (sdu *ServiceDeleteUser) Run(id int, user model.User) interface{} {
 	LoadStringsFromService(SERVICE_DELETE)
 	currentUser, err := sdu.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
-		errMsg := fmt.Errorf("The user with email %s doesn't exist", user.Email)
-		return "", errors.NewErrorCore(err, errTrace, errMsg.Error()).PublicError(), http.StatusInternalServerError
+		errMsg := fmt.Errorf("El usuario con email %s no existe", user.Email)
+		return errors.NewErrorUserDoentExist(err, errMsg.Error())
 	}
 
 	if id != currentUser.Id {
-		errMsg := fmt.Errorf("TYou don't have acces to delete this user")
-		return "", errors.NewErrorCore(errMsg, errTrace, errMsg.Error()).PublicError(), http.StatusInternalServerError
+		errMsg := fmt.Errorf("No tienes acceso para borrar el usuario")
+		return errors.NewErrorUserPermission(errMsg, errMsg.Error())
 	}
 
 	userPasswordBytes := []byte(currentUser.Password)
 	passwordBytes := []byte(user.Password)
 	err = bcrypt.CompareHashAndPassword(userPasswordBytes, passwordBytes)
 	if err != nil {
-		return "", errors.NewErrorCore(err, errTrace, "Invalid credentials for user").PublicError(), http.StatusUnauthorized
+		return errors.NewErrorUserCredentials(err)
 	}
 
 	err = sdu.userRepository.Delete(id)
 	if err != nil {
-		return "", errors.NewErrorCore(err, errTrace, "Service error").PublicError(), http.StatusInternalServerError
+		return errors.NewErrorPort(err)
 	}
 
-	return successMessage, nil, http.StatusOK
+	return successMessage
 }

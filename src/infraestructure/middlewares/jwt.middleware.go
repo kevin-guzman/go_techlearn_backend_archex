@@ -21,13 +21,14 @@ func JWTMIddleware(jwtService jwt.JWTService, roles []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		const BEARER_SCHEMA = "Bearer "
 		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
+		if authHeader == "" || len(authHeader) <= 8 {
 			response.SendError(c, "Not bearer token found", "Not bearer token found", http.StatusUnauthorized)
 			c.Abort()
 			return
 		}
 		tokenString := authHeader[len(BEARER_SCHEMA):]
 		token, err := jwtService.ValidateToken(tokenString)
+		// fmt.Println("tk", tokenString, token, err, authHeader)
 		if token.Valid {
 			err := jwtService.ValidateRole(token, roles)
 			if err != nil {

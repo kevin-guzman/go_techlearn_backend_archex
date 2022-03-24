@@ -9,6 +9,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	doc "golang-gingonic-hex-architecture/src/docs"
+	"golang-gingonic-hex-architecture/src/infraestructure/configuration"
+	"golang-gingonic-hex-architecture/src/infraestructure/exceptions"
 
 	"golang-gingonic-hex-architecture/src/infraestructure"
 
@@ -49,6 +51,8 @@ func main() {
 
 	doc.SwaggerInfo_swagger.BasePath = "/" + CONTEXT_PATH
 	server := gin.Default()
+	logger := configuration.NewAppLogger()
+	server.Use(exceptions.ErrorHandler(logger))
 	path := server.Group(CONTEXT_PATH)
 	{
 		infraestructure.InitInfraestructure(path)

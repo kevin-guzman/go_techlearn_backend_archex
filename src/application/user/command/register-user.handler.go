@@ -3,7 +3,6 @@ package command
 import (
 	"golang-gingonic-hex-architecture/src/domain/user/model"
 	"golang-gingonic-hex-architecture/src/domain/user/service"
-	"net/http"
 )
 
 type HandlerRegisterUser struct {
@@ -16,11 +15,10 @@ func NewHandlerRegisterUser(sru *service.ServiceRegisterUser) *HandlerRegisterUs
 	}
 }
 
-func (hru *HandlerRegisterUser) Run(commandRU CommandRegisterUser) (string, error, int) {
+func (hru *HandlerRegisterUser) Run(commandRU CommandRegisterUser) interface{} {
 	user, err := model.NewUser(commandRU.Name, commandRU.Password, commandRU.Role, commandRU.Email, commandRU.CompanyId)
 	if err != nil {
-		return "", err, http.StatusInternalServerError
+		return err
 	}
-	message, err, status := hru.serviceRegisterUser.Run(*user)
-	return message, err, status
+	return hru.serviceRegisterUser.Run(*user)
 }

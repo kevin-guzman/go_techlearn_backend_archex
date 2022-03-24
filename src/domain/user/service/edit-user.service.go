@@ -4,7 +4,6 @@ import (
 	"golang-gingonic-hex-architecture/src/domain/errors"
 	"golang-gingonic-hex-architecture/src/domain/user/model"
 	"golang-gingonic-hex-architecture/src/domain/user/port/repository"
-	"net/http"
 )
 
 type ServiceEditUser struct {
@@ -17,12 +16,12 @@ func NewServiceEditUser(UserR repository.RepositoryUser) *ServiceEditUser {
 	}
 }
 
-func (seu ServiceEditUser) Run(id int, user model.User) (string, error, int) {
+func (seu ServiceEditUser) Run(id int, user model.User) interface{} {
 	LoadStringsFromService(SERVICE_EDIT)
 	err := seu.userRepository.EditUser(id, user)
 	if err != nil {
-		return "", errors.NewErrorCore(err, errTrace, "Service error").PublicError(), http.StatusInternalServerError
+		return errors.NewErrorPort(err)
 	}
 
-	return successMessage, nil, http.StatusOK
+	return successMessage
 }

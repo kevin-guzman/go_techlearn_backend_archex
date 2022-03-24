@@ -35,11 +35,9 @@ func (rup *RepositoryUserPostgreSql) ExistUserNameAndEmail(name, email string) (
 }
 
 func (rup *RepositoryUserPostgreSql) GetUserByEmail(email string) (user model.User, err error) {
-	result := rup.userRepository.Find(&user, "email = ?", email)
-	if result.Error != nil {
-		return user, result.Error
-	}
-	return user, nil
+	d := rup.userRepository.Raw("SELECT * FROM users u WHERE email = ? AND u.deleted_at IS NULL ORDER BY u.id LIMIT 1", email).Scan(&user)
+	err = d.Error
+	return user, d.Error
 }
 
 func (rup *RepositoryUserPostgreSql) EditUser(id int, user model.User) error {
