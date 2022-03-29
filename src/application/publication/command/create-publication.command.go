@@ -1,6 +1,10 @@
 package command
 
-import "golang-gingonic-hex-architecture/src/domain/publication/model"
+import (
+	"golang-gingonic-hex-architecture/src/domain/publication/model"
+
+	"github.com/lib/pq"
+)
 
 type CommandCreatePublication struct {
 	Title       string                 `json:"Title" binding:"required,min=5"`
@@ -8,4 +12,5 @@ type CommandCreatePublication struct {
 	Content     string                 `json:"Content" binding:"required,min=90"`
 	WiterUserId int                    `json:"WiterUserId"`
 	Type        model.PublicationTypes `json:"Type" binding:"required"`
+	Categories  pq.StringArray         `json:"Categories"`
 }

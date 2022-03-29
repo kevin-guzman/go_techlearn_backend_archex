@@ -18,19 +18,17 @@ type User struct {
 	Id            int
 	Role          string
 	Email         string
-	CompanyId     int
 }
 
-func NewUser(name, password, role, email string, companyId int) (*User, *errors.ErrorCore) {
+func NewUser(name, password, role, email string) (*User, *errors.ErrorCore) {
 	if len(password) < MIN_PASSWORD_LENGTH {
 		err := fmt.Errorf(ERR_LENGTH)
 		return nil, errors.NewErrorInvalidLength(err, err.Error())
 	}
 	return &User{
-		Name:      name,
-		Password:  password,
-		Role:      role,
-		Email:     email,
-		CompanyId: companyId,
+		Name:     name,
+		Password: password,
+		Role:     role,
+		Email:    email,
 	}, nil
 }

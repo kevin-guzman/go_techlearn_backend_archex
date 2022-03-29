@@ -16,7 +16,7 @@ func NewHandlerRegisterUser(sru *service.ServiceRegisterUser) *HandlerRegisterUs
 }
 
 func (hru *HandlerRegisterUser) Run(commandRU CommandRegisterUser) interface{} {
-	user, err := model.NewUser(commandRU.Name, commandRU.Password, commandRU.Role, commandRU.Email, commandRU.CompanyId)
+	user, err := model.NewUser(commandRU.Name, commandRU.Password, commandRU.Role, commandRU.Email)
 	if err != nil {
 		return err
 	}

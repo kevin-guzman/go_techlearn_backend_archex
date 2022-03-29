@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"golang-gingonic-hex-architecture/src/infraestructure/response"
 	"golang-gingonic-hex-architecture/src/infraestructure/utils/jwt"
 	"net/http"
 
@@ -22,23 +21,23 @@ func JWTMIddleware(jwtService jwt.JWTService, roles []string) gin.HandlerFunc {
 		const BEARER_SCHEMA = "Bearer "
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" || len(authHeader) <= 8 {
-			response.SendError(c, "Not bearer token found", "Not bearer token found", http.StatusUnauthorized)
+			c.String(http.StatusBadRequest, "Not bearer token found")
 			c.Abort()
 			return
 		}
 		tokenString := authHeader[len(BEARER_SCHEMA):]
-		token, err := jwtService.ValidateToken(tokenString)
+		token, _ := jwtService.ValidateToken(tokenString)
 		// fmt.Println("tk", tokenString, token, err, authHeader)
 		if token.Valid {
 			err := jwtService.ValidateRole(token, roles)
 			if err != nil {
-				response.SendError(c, err.Error(), "Invalid token", http.StatusUnauthorized)
+				c.String(http.StatusUnauthorized, "Invalid token"+err.Error())
 				c.Abort()
 				return
 			} else {
 				err, id := jwtService.GetId(token)
 				if err != nil {
-					response.SendError(c, err.Error(), "Invalid token", http.StatusUnauthorized)
+					c.String(http.StatusUnauthorized, "Invalid token")
 					return
 				}
 				c.Set("id", id)
@@ -46,7 +45,7 @@ func JWTMIddleware(jwtService jwt.JWTService, roles []string) gin.HandlerFunc {
 				return
 			}
 		} else {
-			response.SendError(c, err.Error(), "Invalid token", http.StatusUnauthorized)
+			c.String(http.StatusUnauthorized, "Invalid token")
 			c.Abort()
 			return
 		}

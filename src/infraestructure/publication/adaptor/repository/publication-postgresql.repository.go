@@ -3,6 +3,7 @@ package repository
 import (
 	"golang-gingonic-hex-architecture/src/domain/publication/model"
 	"golang-gingonic-hex-architecture/src/infraestructure/publication/entity"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -25,7 +26,24 @@ func (rcp *RepositoryPublicationPostgreSql) Save(publication model.Publication) 
 		WiterUserId: publication.WiterUserId,
 		WrittenAt:   publication.WrittenAt,
 		Type:        publication.Type,
+		Categories:  publication.Categories,
 	}
 	result := rcp.publicationRepository.Create(&entity)
 	return result.Error
+}
+
+func (rcp *RepositoryPublicationPostgreSql) ExistById(id int) (bool, error) {
+	// var user model.Publication
+	var count int64 = 0
+
+	parsedId := strconv.Itoa(id)
+	rawSql := "SELECT p.id FROM publications p WHERE p.id = " + parsedId
+	result := rcp.publicationRepository.Raw(rawSql).Count(&count)
+
+	// result := rcp.publicationRepository.Where("id = ?", id).Find(&user).Count(&count)
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
 }

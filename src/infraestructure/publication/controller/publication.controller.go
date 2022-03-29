@@ -7,20 +7,30 @@ import (
 )
 
 type ControllerPublication struct {
-	handlerCreatePublication      command.HandlerCreatePublication
-	handlerListPublication        query.HandlerListPublication
-	handlerListFiltredPublication query.HandlerListFiltredPublication
+	handlerCreatePublication        command.HandlerCreatePublication
+	handlerListPublication          query.HandlerListPublication
+	handlerListFiltredPublication   query.HandlerListFiltredPublication
+	handlerListSearchedPublications query.HandlerListSearchedPublications
+	handlerGetOneById               query.HandlerGetOneById
 }
 
-func NewControllerPublication(hcp command.HandlerCreatePublication, hlp query.HandlerListPublication, hlfp query.HandlerListFiltredPublication) *ControllerPublication {
+func NewControllerPublication(
+	hcp command.HandlerCreatePublication,
+	hlp query.HandlerListPublication,
+	hlfp query.HandlerListFiltredPublication,
+	hlsp query.HandlerListSearchedPublications,
+	hgobid query.HandlerGetOneById,
+) *ControllerPublication {
 	return &ControllerPublication{
-		handlerCreatePublication:      hcp,
-		handlerListPublication:        hlp,
-		handlerListFiltredPublication: hlfp,
+		handlerCreatePublication:        hcp,
+		handlerListPublication:          hlp,
+		handlerListFiltredPublication:   hlfp,
+		handlerListSearchedPublications: hlsp,
+		handlerGetOneById:               hgobid,
 	}
 }
 
-func (cp *ControllerPublication) Create(command command.CommandCreatePublication) (string, error, int) {
+func (cp *ControllerPublication) Create(command command.CommandCreatePublication) interface{} {
 	return cp.handlerCreatePublication.Run(command)
 }
 
@@ -30,4 +40,12 @@ func (cp *ControllerPublication) List() []*dto.PublicationDto {
 
 func (cp *ControllerPublication) ListFiltred(filters dto.FilterPublicationsDto) []*dto.PublicationDto {
 	return cp.handlerListFiltredPublication.Run(filters)
+}
+
+func (cp *ControllerPublication) Search(text string) []*dto.PublicationDto {
+	return cp.handlerListSearchedPublications.Run(text)
+}
+
+func (cp *ControllerPublication) GetOneById(id int) *dto.PublicationDto {
+	return cp.handlerGetOneById.Run(id)
 }

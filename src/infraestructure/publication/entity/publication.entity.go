@@ -1,11 +1,13 @@
 package entity
 
 import (
-	"golang-gingonic-hex-architecture/src/infraestructure/user/entity"
+	commentEntity "golang-gingonic-hex-architecture/src/infraestructure/comment/entity"
+	userEntity "golang-gingonic-hex-architecture/src/infraestructure/user/entity"
 	"time"
 
 	"golang-gingonic-hex-architecture/src/domain/publication/model"
 
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +18,9 @@ type Publication struct {
 	Description string
 	Content     string
 	WiterUserId int
-	User        entity.User `gorm:"foreignKey:WiterUserId"`
+	User        userEntity.User `gorm:"foreignKey:WiterUserId"`
 	WrittenAt   time.Time
 	Type        model.PublicationTypes
+	Categories  pq.StringArray          `gorm:"type:text[]"`
+	Comments    []commentEntity.Comment `gorm:"foreignKey:PublicationId"`
 }

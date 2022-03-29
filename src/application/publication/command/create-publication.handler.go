@@ -16,7 +16,7 @@ func NewHandlerCreatePublication(sca *service.ServiceCreatePublication) *Handler
 }
 
 func (hca *HandlerCreatePublication) Run(command CommandCreatePublication) interface{} {
-	article, err := model.NewPublication(command.Title, command.Description, command.Content, command.WiterUserId, command.Type)
+	article, err := model.NewPublication(command.Title, command.Description, command.Content, command.WiterUserId, command.Type, command.Categories)
 	if err != nil {
 		return err
 	}

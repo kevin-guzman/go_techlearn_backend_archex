@@ -102,7 +102,7 @@ func CreateUser(c *gin.Context) {
 // @Tags user
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.ResponseModel
+// @Success 200 {object} []dto.UserDto
 // @Failture 500 {object} response.ResponseModel
 // @Router /user [get]
 func ListUsers(c *gin.Context) {
@@ -124,9 +124,10 @@ func ListUsers(c *gin.Context) {
 func Login(c *gin.Context) {
 	var credentials command.CommandLoginUser
 	if err := c.ShouldBindJSON(&credentials); err != nil {
-		response.SendError(c, "Invalid data: "+err.Error(), "", http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "Invalid data: "+err.Error())
 		return
 	}
+
 	response := controllerInstance.Login(credentials)
 	exceptions.ExceptionAndResponseWrapper(c, response, func() {
 		c.JSON(http.StatusOK, response)
@@ -160,7 +161,6 @@ func Update(c *gin.Context) {
 	user.UserId = int(parsedId)
 
 	response := controllerInstance.Update(user)
-
 	exceptions.ExceptionAndResponseWrapper(c, response, func() {
 		c.JSON(http.StatusOK, response)
 	})
