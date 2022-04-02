@@ -130,7 +130,6 @@ func CreatePublication(c *gin.Context) {
 
 	id, _ := c.Get("id")
 	parsedId, err := strconv.ParseInt(id.(string), 10, 64)
-	fmt.Println("par", id, parsedId)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Invalid data: "+err.Error())
 		return
@@ -143,29 +142,24 @@ func CreatePublication(c *gin.Context) {
 		var err error
 		file, header, err = c.Request.FormFile("File")
 		if err != nil {
-			fmt.Println("1", err.Error())
+
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 		filename := header.Filename
 		err = os.MkdirAll("public/", os.ModePerm)
-		fmt.Println("Errer", err)
 
 		fileDirectory = id.(string) + strconv.Itoa(rand.Intn(10000)) + filename
 		filedirectory = "public/" + fileDirectory
 		out, err := os.OpenFile(filedirectory, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
-			fmt.Println("2", err.Error())
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 		defer out.Close()
 
-		fmt.Println("File path", filedirectory)
-
 		_, err = io.Copy(out, file)
 		if err != nil {
-			fmt.Println("3", err.Error())
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
