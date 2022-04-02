@@ -27,6 +27,7 @@ func (rcp *RepositoryPublicationPostgreSql) Save(publication model.Publication) 
 		WrittenAt:   publication.WrittenAt,
 		Type:        publication.Type,
 		Categories:  publication.Categories,
+		ContentType: publication.ContentType,
 	}
 	result := rcp.publicationRepository.Create(&entity)
 	return result.Error

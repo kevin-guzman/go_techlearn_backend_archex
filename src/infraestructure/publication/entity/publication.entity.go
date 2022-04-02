@@ -23,4 +23,5 @@ type Publication struct {
 	Type        model.PublicationTypes
 	Categories  pq.StringArray          `gorm:"type:text[]"`
 	Comments    []commentEntity.Comment `gorm:"foreignKey:PublicationId"`
+	ContentType string
 }

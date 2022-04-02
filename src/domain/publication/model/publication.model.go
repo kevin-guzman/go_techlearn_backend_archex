@@ -16,9 +16,10 @@ type Publication struct {
 	WrittenAt   time.Time
 	Type        PublicationTypes
 	Categories  []string
+	ContentType string
 }
 
-func NewPublication(title, description, content string, witerUserId int, publicationType PublicationTypes, categories []string) (*Publication, error) {
+func NewPublication(title, description, content, contentType string, witerUserId int, publicationType PublicationTypes, categories []string) (*Publication, error) {
 	return &Publication{
 		Title:       title,
 		Description: description,
@@ -27,6 +28,7 @@ func NewPublication(title, description, content string, witerUserId int, publica
 		WrittenAt:   time.Now(),
 		Type:        publicationType,
 		Categories:  categories,
+		ContentType: contentType,
 	}, nil
 }
 

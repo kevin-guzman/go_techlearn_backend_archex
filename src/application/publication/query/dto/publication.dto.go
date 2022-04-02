@@ -18,4 +18,5 @@ type PublicationDto struct {
 	Type        model.PublicationTypes
 	Categories  pq.StringArray   `gorm:"type:text[]"`
 	Comments    []dto.CommentDto `gorm:"foreignKey:PublicationId"`
+	ContentType string
 }
